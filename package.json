@@ -1,5 +1,5 @@
 {
-  "name": "bk98_ts_template",
+  "name": "bk98_online_time",
   "version": "1.0.0",
   "description": "",
   "main": "build.mjs",
@@ -29,7 +29,6 @@
     ]
   },
   "dependencies": {
-    "fivem-js": "^1.5.2"
   },
   "devDependencies": {
     "@citizenfx/client": "latest",
