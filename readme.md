@@ -9,7 +9,7 @@
 - Required Node.js (16.x) or modern
 
 ```
-npm install
+yarn install
 npm run build
 ```
 
@@ -22,11 +22,17 @@ Create Timer Instance:
   local playerTimer = exports.bk98_online_time:onlineTime({
     name = "Uniq Instance Name",
     autoSaveInterval = 1000 * 60 * 5, -- Time Interval to auto save to data base player time
+    -- If set 'oxmysql' (getTime, saveTime) is not required and script used self function to save and read data from database
+    storeTimeFunction = 'standalone' -- ['oxmysql', 'standalone']
+
+    -- ONLY for storeTimeFunction = 'standalone'
     getTime = function(type, identifier) -- Your function to store player time in database
       return MySQL.scalar.await('SELECT time FROM onlineTime WHERE identifier = ? AND type = ? LIMIT 1', {
         identifier, type
       }) or 0
     end,
+
+    -- ONLY for storeTimeFunction = 'standalone'
     saveTime = function(type, identifier, time) -- Your function to get player time from database
       MySQL.rawExecute.await(
         'INSERT INTO onlineTime (type, identifier, time) VALUES(?, ?, ?) ON DUPLICATE KEY UPDATE time=?'

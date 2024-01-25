@@ -29,6 +29,7 @@
     ]
   },
   "dependencies": {
+    "@overextended/oxmysql": "^1.3.0"
   },
   "devDependencies": {
     "@citizenfx/client": "latest",

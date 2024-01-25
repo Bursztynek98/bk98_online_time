@@ -16,7 +16,7 @@ client_scripts {
 }
 server_scripts {
   'dist/server.js',
-   	'@oxmysql/lib/MySQL.lua',
+  --'@oxmysql/lib/MySQL.lua',
    'example/server-player-time.lua',
 }
 

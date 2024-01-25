@@ -1,24 +1,42 @@
+import { StoreTimeFunction } from 'enum/store-time-function.enum';
 import { type IOnlineTimeData } from 'interface/online-time-data.interface';
 import { type IPlayersTime } from 'interface/players-time.interface';
+import { oxMysqlSaveTime, oxMysqlGetTime } from './ox-mysql-integration';
 
 export class OnlineTime {
   private readonly name: string;
   private readonly playersTime = new Map<string, IPlayersTime>();
-  private readonly saveTime: (
-    type: string,
-    identifier: string,
-    time: number,
-  ) => void;
-
-  private readonly getTime: (
-    type: string,
-    identifier: string,
-  ) => Promise<number>;
+  private readonly saveTime: Required<IOnlineTimeData>['saveTime'];
+  private readonly getTime: Required<IOnlineTimeData>['getTime'];
 
   constructor(data: IOnlineTimeData) {
+    if (typeof data?.name !== 'string') {
+      throw new Error('name is required');
+    }
     this.name = data.name;
-    this.saveTime = data.saveTime;
-    this.getTime = data.getTime;
+
+    switch (data.storeTimeFunction) {
+      case StoreTimeFunction.standalone:
+        if (typeof data?.saveTime !== 'function') {
+          throw new Error('saveTime function is required');
+        }
+        if (typeof data?.getTime !== 'function') {
+          throw new Error('saveTime function is required');
+        }
+        this.saveTime = data.saveTime;
+        this.getTime = data.getTime;
+        break;
+      case StoreTimeFunction.oxmysql:
+        this.saveTime = oxMysqlSaveTime;
+        this.getTime = oxMysqlGetTime;
+        break;
+      default:
+        throw new Error(
+          `storeTimeFunction type is required (${Object.keys(
+            StoreTimeFunction,
+          ).join(', ')})`,
+        );
+    }
     this.joinEvent = this.joinEvent.bind(this);
     this.leftEvent = this.leftEvent.bind(this);
     this.getPlayerTime = this.getPlayerTime.bind(this);
@@ -37,7 +55,11 @@ export class OnlineTime {
       this.name,
       identifier,
       time.database + (this.currentTime - time.current),
-    );
+    )
+      .then()
+      .catch((error) => {
+        throw error;
+      });
   }
 
   private autoSave(): void {
