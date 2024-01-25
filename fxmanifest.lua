@@ -4,7 +4,7 @@ fx_version 'bodacious'
 game 'gta5'
 
 author 'Bursztynek98'
-version '1.0.0'
+version '1.1.0'
 
 fxdk_watch_command 'yarn' { 'watch' }
 fxdk_build_command 'yarn' { 'build' }
