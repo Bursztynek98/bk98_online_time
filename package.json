@@ -1,6 +1,6 @@
 {
   "name": "bk98_online_time",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "main": "build.mjs",
   "scripts": {
